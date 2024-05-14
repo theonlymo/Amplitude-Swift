@@ -282,12 +282,7 @@ extension PersistentStorage {
         // let searchPathDirectory = FileManager.SearchPathDirectory.applicationSupportDirectory
         // tvOS doesn't have access to document
         // macOS /Documents dir might be synced with iCloud
-        #if os(tvOS) || os(macOS)
-            let searchPathDirectory = FileManager.SearchPathDirectory.cachesDirectory
-        #else
-            let searchPathDirectory = FileManager.SearchPathDirectory.documentDirectory
-        #endif
-
+        let searchPathDirectory = FileManager.SearchPathDirectory.cachesDirectory
         let urls = fileManager.urls(for: searchPathDirectory, in: .userDomainMask)
         let docUrl = urls[0]
         let storageUrl = docUrl.appendingPathComponent("amplitude/\(appPath ?? "")\(eventsFileKey)/")
