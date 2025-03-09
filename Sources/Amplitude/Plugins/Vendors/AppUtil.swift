@@ -6,12 +6,9 @@
 
 import Foundation
 
-#if os(iOS) || os(tvOS) || targetEnvironment(macCatalyst)
+#if (os(iOS) || os(tvOS) || os(visionOS) || targetEnvironment(macCatalyst)) && !AMPLITUDE_DISABLE_UIKIT
     import SystemConfiguration
     import UIKit
-    #if !os(tvOS)
-        import WebKit
-    #endif
 
     internal class IOSVendorSystem: VendorSystem {
         private let device = UIDevice.current
@@ -38,6 +35,8 @@ import Foundation
         override var platform: String {
             #if os(tvOS)
                 return "tvOS"
+            #elseif os(visionOS)
+                return "visionOS"
             #elseif targetEnvironment(macCatalyst)
                 return "macOS"
             #else
@@ -65,7 +64,15 @@ import Foundation
         }
 
         override func beginBackgroundTask() -> BackgroundTaskCompletionCallback? {
-            if isRunningInAppExtension {
+            if !isRunningInAppExtension, let application = IOSVendorSystem.sharedApplication {
+                var id: UIBackgroundTaskIdentifier = .invalid
+                let callback = { () in
+                    application.endBackgroundTask(id)
+                    id = .invalid
+                }
+                id = application.beginBackgroundTask(withName: "amplitude", expirationHandler: callback)
+                return callback
+            } else {
                 let semaphore = DispatchSemaphore(value: 0)
                 ProcessInfo.processInfo.performExpiringActivity(withReason: "Amplitude") { expired in
                     guard !expired else {
@@ -77,27 +84,22 @@ import Foundation
                 return {
                     semaphore.signal()
                 }
-            } else {
-                var id: UIBackgroundTaskIdentifier = .invalid
-                let callback = { () in
-                    UIApplication.shared.endBackgroundTask(id)
-                    id = .invalid
-                }
-                id = UIApplication.shared.beginBackgroundTask(withName: "amplitude", expirationHandler: callback)
-                return callback
             }
         }
 
         private var isRunningInAppExtension: Bool {
             return Bundle.main.bundlePath.hasSuffix(".appex")
         }
+
+        // Extension-safe accessor for sharedApplication. Will return nil if run in an extension.
+        static var sharedApplication: UIApplication? {
+            return UIApplication.value(forKeyPath: "sharedApplication") as? UIApplication
+        }
     }
 #endif
 
 #if os(macOS)
-
     import Cocoa
-    import WebKit
 
     internal class MacOSVendorSystem: VendorSystem {
         private let device = ProcessInfo.processInfo
@@ -244,6 +246,12 @@ import Foundation
 
         override var requiredPlugin: Plugin {
             return WatchOSLifecycleMonitor()
+        }
+
+        // Per https://developer.apple.com/documentation/technotes/tn3135-low-level-networking-on-watchos,
+        // NWPathMonitor is not supported on most WatchOS apps when running on a real device.
+        override var networkConnectivityCheckingEnabled: Bool {
+            return false
         }
     }
 #endif

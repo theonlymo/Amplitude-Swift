@@ -12,6 +12,25 @@ import XCTest
 // swiftlint:disable force_cast
 final class BaseEventTests: XCTestCase {
     func testToString() {
+        let eventProperties: [String: Any?] = [
+            "integer": 1,
+            "string": "stringValue",
+            "array": [1, 2, 3],
+            "int64": 1 as Int64,
+            "int32": 1 as Int32,
+            "cgfloat": 3.14 as CGFloat,
+            "double": 3.14 as Double,
+            "decimal": 3.14 as Decimal,
+            "decimalnumber": 3.14 as NSDecimalNumber,
+            "bool": true,
+            "numberbool": true as NSNumber,
+            "dict": ["a": 1, "b": 2, "c": "d"],
+            "embeddedArray": ["a": [1, 2, 3]],
+            "embeddedDict": [1, 2, ["a": 3]],
+            "array2": ["a", 1, 2, "b"],
+            "nestedarray": [[["a": ["b": 1]]]],
+            "nesteddictionary": ["a": ["b": [[1]]]],
+        ]
         let baseEvent = BaseEvent(
             plan: Plan(
                 branch: "test-branch",
@@ -24,16 +43,7 @@ final class BaseEventTests: XCTestCase {
                 sourceVersion: "test-source-version"
             ),
             eventType: "test",
-            eventProperties: [
-                "integer": 1,
-                "string": "stringValue",
-                "array": [1, 2, 3],
-                "int64": 1 as Int64,
-                "int32": 1 as Int32,
-                "cgfloat": 3.14 as CGFloat,
-                "double": 3.14 as Double
-            ]
-        )
+            eventProperties: eventProperties)
 
         let baseEventData = baseEvent.toString().data(using: .utf8)!
         let baseEventDict =
@@ -41,6 +51,11 @@ final class BaseEventTests: XCTestCase {
         XCTAssertEqual(
             baseEventDict!["event_type"] as! String,
             "test"
+        )
+        XCTAssertEqual(baseEventDict!["event_properties"] as! NSDictionary, eventProperties as NSDictionary)
+        XCTAssertEqual(
+            baseEventDict!["event_properties"]!["numberbool"],
+            true as NSNumber
         )
         XCTAssertEqual(
             baseEventDict!["event_properties"]!["integer" as NSString] as! Int,
@@ -61,6 +76,10 @@ final class BaseEventTests: XCTestCase {
         XCTAssertEqual(
             baseEventDict!["event_properties"]!["double" as NSString] as! Double,
             3.14
+        )
+        XCTAssertEqual(
+            Decimal(baseEventDict!["event_properties"]!["decimal" as NSString] as! Double),
+            Decimal(3.14)
         )
         XCTAssertEqual(
             baseEventDict!["event_properties"]!["string" as NSString] as! String,
@@ -94,6 +113,10 @@ final class BaseEventTests: XCTestCase {
             baseEventDict!["ingestion_metadata"]!["source_version" as NSString] as! String,
             "test-source-version"
         )
+        XCTAssertEqual((baseEventDict!["event_properties"]!["nestedarray" as NSString] as! NSArray),
+                       [[["a": ["b": 1]]]])
+        XCTAssertEqual((baseEventDict!["event_properties"]!["nesteddictionary" as NSString] as! NSDictionary),
+                       ["a": ["b": [[1]]]])
     }
 
     func testToString_withNilValues() {
@@ -142,7 +165,9 @@ final class BaseEventTests: XCTestCase {
                 "event_properties": {
                     "integer": 1,
                     "string": "stringValue",
-                    "array": [1, 2, 3]
+                    "array": [1, 2, 3],
+                    "nestedarray": [[{"a": {"b": 1}}]],
+                    "nesteddictionary": {"a": {"b": [[1]]}},
                 },
                 "plan": {
                     "branch": "test-branch",
@@ -174,6 +199,15 @@ final class BaseEventTests: XCTestCase {
             event?.eventProperties!["array"] as! [Double],
             [1, 2, 3]
         )
+        XCTAssertEqual(
+            event?.eventProperties!["nestedarray"] as! NSArray,
+            [[["a": ["b": 1]]]]
+        )
+        XCTAssertEqual(
+            event?.eventProperties!["nesteddictionary"] as! NSDictionary,
+            ["a": ["b": [[1]]]]
+        )
+
         XCTAssertEqual(
             event?.plan?.branch,
             "test-branch"

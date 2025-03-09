@@ -4,18 +4,27 @@ public class Sessions {
     private let configuration: Configuration
     private let storage: Storage
     private let logger: (any Logger)?
+    private let timeline: Timeline
     private var _sessionId: Int64 = -1
     private(set) var sessionId: Int64 {
-        get { _sessionId }
+        get {
+            sessionIdLock.withLock {
+                _sessionId
+            }
+        }
         set {
-            _sessionId = newValue
+            sessionIdLock.withLock {
+                _sessionId = newValue
+            }
             do {
                 try storage.write(key: StorageKey.PREVIOUS_SESSION_ID, value: _sessionId)
             } catch {
                 logger?.warn(message: "Can't write PREVIOUS_SESSION_ID to storage: \(error)")
             }
+            timeline.onSessionIdChanged(_sessionId)
         }
     }
+    private let sessionIdLock = NSLock()
 
     private var _lastEventId: Int64 = 0
     private(set) var lastEventId: Int64 {
@@ -47,6 +56,7 @@ public class Sessions {
         configuration = amplitude.configuration
         storage = amplitude.storage
         logger = amplitude.logger
+        timeline = amplitude.timeline
         self._sessionId = amplitude.storage.read(key: .PREVIOUS_SESSION_ID) ?? -1
         self._lastEventId = amplitude.storage.read(key: .LAST_EVENT_ID) ?? 0
         self._lastEventTime = amplitude.storage.read(key: .LAST_EVENT_TIME) ?? -1
@@ -119,7 +129,7 @@ public class Sessions {
 
     public func startNewSession(timestamp: Int64) -> [BaseEvent] {
         var sessionEvents: [BaseEvent] = Array()
-        let trackingSessionEvents = configuration.defaultTracking.sessions
+        let trackingSessionEvents = configuration.autocapture.contains(.sessions)
 
         // end previous session
         if trackingSessionEvents && self.sessionId >= 0 {
@@ -148,7 +158,7 @@ public class Sessions {
 
     public func endCurrentSession() -> [BaseEvent] {
         var sessionEvents: [BaseEvent] = Array()
-        let trackingSessionEvents = configuration.defaultTracking.sessions
+        let trackingSessionEvents = configuration.autocapture.contains(.sessions)
 
         if trackingSessionEvents && self.sessionId >= 0 {
             let sessionEndEvent = BaseEvent(

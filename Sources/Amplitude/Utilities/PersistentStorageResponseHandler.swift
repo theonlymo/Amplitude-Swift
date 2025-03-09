@@ -28,32 +28,35 @@ class PersistentStorageResponseHandler: ResponseHandler {
         self.eventsString = eventsString
     }
 
-    func handleSuccessResponse(code: Int) {
+    func handleSuccessResponse(code: Int) -> Bool {
         guard let events = BaseEvent.fromArrayString(jsonString: eventsString) else {
             storage.remove(eventBlock: eventBlock)
             removeEventCallbackByEventsString(eventsString: eventsString)
-            return
+            return true
         }
         triggerEventsCallback(events: events, code: code, message: "Successfully send event")
         storage.remove(eventBlock: eventBlock)
+        return true
     }
 
-    func handleBadRequestResponse(data: [String: Any]) {
+    func handleBadRequestResponse(data: [String: Any]) -> Bool {
         guard let events = BaseEvent.fromArrayString(jsonString: eventsString) else {
             storage.remove(eventBlock: eventBlock)
             removeEventCallbackByEventsString(eventsString: eventsString)
-            return
+            return true
         }
 
-        if events.count == 1 {
-            let error = data["error"] as? String ?? ""
+        let error = data["error"] as? String ?? ""
+
+        let isInvalidApiKey = error == "Invalid API key: \(configuration.apiKey)"
+        if events.count == 1 || isInvalidApiKey {
             triggerEventsCallback(
                 events: events,
                 code: HttpClient.HttpStatus.BAD_REQUEST.rawValue,
                 message: error
             )
             storage.remove(eventBlock: eventBlock)
-            return
+            return true
         }
 
         var dropIndexes = Set<Int>()
@@ -81,7 +84,6 @@ class PersistentStorageResponseHandler: ResponseHandler {
             }
         }
 
-        let error = data["error"] as? String ?? ""
         triggerEventsCallback(events: eventsToDrop, code: HttpClient.HttpStatus.BAD_REQUEST.rawValue, message: error)
 
         eventsToRetry.forEach { event in
@@ -89,13 +91,14 @@ class PersistentStorageResponseHandler: ResponseHandler {
         }
 
         storage.remove(eventBlock: eventBlock)
+        return true
     }
 
-    func handlePayloadTooLargeResponse(data: [String: Any]) {
+    func handlePayloadTooLargeResponse(data: [String: Any]) -> Bool {
         guard let events = BaseEvent.fromArrayString(jsonString: eventsString) else {
             storage.remove(eventBlock: eventBlock)
             removeEventCallbackByEventsString(eventsString: eventsString)
-            return
+            return true
         }
         if events.count == 1 {
             let error = data["error"] as? String ?? ""
@@ -105,28 +108,32 @@ class PersistentStorageResponseHandler: ResponseHandler {
                 message: error
             )
             storage.remove(eventBlock: eventBlock)
-            return
+            return true
         }
         storage.splitBlock(eventBlock: eventBlock, events: events)
+        return true
     }
 
-    func handleTooManyRequestsResponse(data: [String: Any]) {
+    func handleTooManyRequestsResponse(data: [String: Any]) -> Bool {
         // wait for next time to pick it up
+        return false
     }
 
-    func handleTimeoutResponse(data: [String: Any]) {
+    func handleTimeoutResponse(data: [String: Any]) -> Bool {
         // Wait for next time to pick it up
+        return false
     }
 
-    func handleFailedResponse(data: [String: Any]) {
+    func handleFailedResponse(data: [String: Any]) -> Bool {
         // wait for next time to try again
+        return false
     }
 
-    func handle(result: Result<Int, Error>) {
+    func handle(result: Result<Int, Error>) -> Bool {
         switch result {
         case .success(let code):
             // We don't care about the data when success
-            handleSuccessResponse(code: code)
+            return handleSuccessResponse(code: code)
         case .failure(let error):
             switch error {
             case HttpClient.Exception.httpError(let code, let data):
@@ -136,20 +143,20 @@ class PersistentStorageResponseHandler: ResponseHandler {
                 }
                 switch code {
                 case HttpClient.HttpStatus.BAD_REQUEST.rawValue:
-                    handleBadRequestResponse(data: json)
+                    return handleBadRequestResponse(data: json)
                 case HttpClient.HttpStatus.PAYLOAD_TOO_LARGE.rawValue:
-                    handlePayloadTooLargeResponse(data: json)
+                    return handlePayloadTooLargeResponse(data: json)
                 case HttpClient.HttpStatus.TIMEOUT.rawValue:
-                    handleTimeoutResponse(data: json)
+                    return handleTimeoutResponse(data: json)
                 case HttpClient.HttpStatus.TOO_MANY_REQUESTS.rawValue:
-                    handleTooManyRequestsResponse(data: json)
+                    return handleTooManyRequestsResponse(data: json)
                 case HttpClient.HttpStatus.FAILED.rawValue:
-                    handleFailedResponse(data: json)
+                    return handleFailedResponse(data: json)
                 default:
-                    handleFailedResponse(data: json)
+                    return handleFailedResponse(data: json)
                 }
             default:
-                break
+                return false
             }
         }
     }
@@ -181,5 +188,35 @@ extension PersistentStorageResponseHandler {
                 }
             }
         }
+    }
+}
+
+extension PersistentStorageResponseHandler {
+    func handle(result: Result<Int, any Error>) {
+        let _: Bool = handle(result: result)
+    }
+
+    func handleSuccessResponse(code: Int) {
+        let _: Bool = handleSuccessResponse(code: code)
+    }
+
+    func handleBadRequestResponse(data: [String: Any]) {
+        let _: Bool = handleBadRequestResponse(data: data)
+    }
+
+    func handlePayloadTooLargeResponse(data: [String: Any]) {
+        let _: Bool = handlePayloadTooLargeResponse(data: data)
+    }
+
+    func handleTooManyRequestsResponse(data: [String: Any]) {
+        let _: Bool = handleTooManyRequestsResponse(data: data)
+    }
+
+    func handleTimeoutResponse(data: [String: Any]) {
+        let _: Bool = handleTimeoutResponse(data: data)
+    }
+
+    func handleFailedResponse(data: [String: Any]) {
+        let _: Bool = handleFailedResponse(data: data)
     }
 }

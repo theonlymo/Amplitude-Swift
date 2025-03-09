@@ -10,6 +10,7 @@ public class Amplitude {
 
     var state: State = State()
     var contextPlugin: ContextPlugin
+    let timeline = Timeline()
 
     lazy var storage: any Storage = {
         return self.configuration.storageProvider
@@ -19,13 +20,20 @@ public class Amplitude {
         return self.configuration.identifyStorageProvider
     }()
 
-    lazy var timeline: Timeline = {
-        return Timeline()
-    }()
-
-    lazy var sessions: Sessions = {
-        return Sessions(amplitude: self)
-    }()
+    private var sessionsLock = NSLock()
+    private var _sessions: Sessions?
+    var sessions: Sessions {
+        get {
+            sessionsLock.synchronizedLazy(&_sessions) {
+                Sessions(amplitude: self)
+            }
+        }
+        set {
+            sessionsLock.withLock {
+                _sessions = newValue
+            }
+        }
+    }
 
     public lazy var logger: (any Logger)? = {
         return self.configuration.loggerProvider
@@ -55,7 +63,8 @@ public class Amplitude {
             state.userId = userId
         }
 
-        if self.configuration.offline != NetworkConnectivityCheckerPlugin.Disabled {
+        if configuration.offline != NetworkConnectivityCheckerPlugin.Disabled,
+           VendorSystem.current.networkConnectivityCheckingEnabled {
             _ = add(plugin: NetworkConnectivityCheckerPlugin())
         }
         // required plugin for specific platform, only has lifecyclePlugin now
@@ -66,6 +75,15 @@ public class Amplitude {
         _ = add(plugin: AnalyticsConnectorPlugin())
         _ = add(plugin: AnalyticsConnectorIdentityPlugin())
         _ = add(plugin: AmplitudeDestinationPlugin())
+
+        // Monitor changes to optOut to send to Timeline
+        configuration.optOutChanged = { [weak self] optOut in
+            self?.timeline.onOptOutChanged(optOut)
+        }
+
+        trackingQueue.async { [self] in
+            self.trimQueuedEvents()
+        }
     }
 
     convenience init(apiKey: String, configuration: Configuration) {
@@ -261,6 +279,7 @@ public class Amplitude {
     public func setUserId(userId: String?) -> Amplitude {
         try? storage.write(key: .USER_ID, value: userId)
         state.userId = userId
+        timeline.onUserIdChanged(userId)
         return self
     }
 
@@ -268,6 +287,7 @@ public class Amplitude {
     public func setDeviceId(deviceId: String?) -> Amplitude {
         try? storage.write(key: .DEVICE_ID, value: deviceId)
         state.deviceId = deviceId
+        timeline.onDeviceIdChanged(deviceId)
         return self
     }
 
@@ -440,5 +460,31 @@ public class Amplitude {
 
     internal func isSandboxEnabled() -> Bool {
         return SandboxHelper().isSandboxEnabled()
+    }
+
+    func trimQueuedEvents() {
+        logger?.debug(message: "Trimming queued events..")
+        guard configuration.maxQueuedEventCount > 0,
+              let eventBlocks: [URL] = storage.read(key: .EVENTS),
+              !eventBlocks.isEmpty else {
+            return
+        }
+
+        var eventCount = 0
+        // Blocks are returned in sorted order, oldest -> newest. Reverse to count newest blocks first.
+        // Only whole blocks are deleted, meaning up to maxQueuedEventCount + flushQueueSize - 1
+        // events may be left on device.
+        for eventBlock in eventBlocks.reversed() {
+            if eventCount < configuration.maxQueuedEventCount {
+                if let eventString = storage.getEventsString(eventBlock: eventBlock),
+                   let eventArray =  BaseEvent.fromArrayString(jsonString: eventString) {
+                    eventCount += eventArray.count
+                }
+            } else {
+                logger?.debug(message: "Trimming \(eventBlock)")
+                storage.remove(eventBlock: eventBlock)
+            }
+        }
+        logger?.debug(message: "Completed trimming events, kept \(eventCount) most recent events")
     }
 }

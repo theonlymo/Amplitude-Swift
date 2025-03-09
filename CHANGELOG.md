@@ -1,3 +1,207 @@
+## [1.11.7](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.6...v1.11.7) (2025-03-05)
+
+
+### Bug Fixes
+
+* allow adding Swift Plugins to ObjC Amplitude ([#264](https://github.com/amplitude/Amplitude-Swift/issues/264)) ([d916d93](https://github.com/amplitude/Amplitude-Swift/commit/d916d93d0e5edc9a02249072df58cea1e06eb8ae))
+
+## [1.11.6](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.5...v1.11.6) (2025-03-03)
+
+
+### Bug Fixes
+
+* add watchos support back to CocoaPods ([#263](https://github.com/amplitude/Amplitude-Swift/issues/263)) ([d9dd73e](https://github.com/amplitude/Amplitude-Swift/commit/d9dd73ef3b8c4f5384373015574b991794903eb7))
+* adding ability to send revenue currency ([#262](https://github.com/amplitude/Amplitude-Swift/issues/262)) ([c34a138](https://github.com/amplitude/Amplitude-Swift/commit/c34a1382f0a4b277b14ff40b57fe045da389ef48))
+
+## [1.11.5](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.4...v1.11.5) (2025-02-04)
+
+
+### Bug Fixes
+
+* improve multi-thread safety to prevent crash ([#259](https://github.com/amplitude/Amplitude-Swift/issues/259)) ([25bde46](https://github.com/amplitude/Amplitude-Swift/commit/25bde46429910d2969494a116f03edf4c706f4f9))
+
+## [1.11.4](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.3...v1.11.4) (2025-01-31)
+
+
+### Bug Fixes
+
+* offline directly after receive bad url error ([#258](https://github.com/amplitude/Amplitude-Swift/issues/258)) ([fb00966](https://github.com/amplitude/Amplitude-Swift/commit/fb009665b3408df35a6e47a2e5833b91353d21ea))
+
+## [1.11.3](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.2...v1.11.3) (2025-01-23)
+
+
+### Bug Fixes
+
+* enhance thread safety of properties ([#257](https://github.com/amplitude/Amplitude-Swift/issues/257)) ([8ffcc65](https://github.com/amplitude/Amplitude-Swift/commit/8ffcc657efb02f42dd7a3f8603c6e0f3511247a0))
+
+## [1.11.2](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.1...v1.11.2) (2024-12-17)
+
+
+### Bug Fixes
+
+* add repeat interval on EventPipeline to prevent high frequency requests on continuing failing ([#250](https://github.com/amplitude/Amplitude-Swift/issues/250)) ([8af9acf](https://github.com/amplitude/Amplitude-Swift/commit/8af9acf3ccd666111f03040467d9891fc0c3b76a))
+* fix likely-to-fail test case ([#251](https://github.com/amplitude/Amplitude-Swift/issues/251)) ([94e5e11](https://github.com/amplitude/Amplitude-Swift/commit/94e5e11f722dcb5fe8e62f1104de5a2a33465e97))
+
+## [1.11.1](https://github.com/amplitude/Amplitude-Swift/compare/v1.11.0...v1.11.1) (2024-12-09)
+
+
+### Bug Fixes
+
+* also include NSURLErrorNotConnectedToInternet when setting configuration to offline ([#249](https://github.com/amplitude/Amplitude-Swift/issues/249)) ([4efb6f4](https://github.com/amplitude/Amplitude-Swift/commit/4efb6f45343593eae4551a48e7cb62a9d50cf923))
+
+# [1.11.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.6...v1.11.0) (2024-11-20)
+
+
+### Features
+
+* add visionOS support ([#244](https://github.com/amplitude/Amplitude-Swift/issues/244)) ([cd25c07](https://github.com/amplitude/Amplitude-Swift/commit/cd25c0737b39a749716ae9b9c3ec2036a4871ba7))
+
+## [1.10.6](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.5...v1.10.6) (2024-11-19)
+
+
+### Bug Fixes
+
+* empty commit to trigger a build ([dc00739](https://github.com/amplitude/Amplitude-Swift/commit/dc00739f79a56ef2605ce8ae72d3c83f565c26d9))
+
+## [1.10.5](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.4...v1.10.5) (2024-11-18)
+
+
+### Bug Fixes
+
+* prevent main thread checker warning ([#248](https://github.com/amplitude/Amplitude-Swift/issues/248)) ([7b71d12](https://github.com/amplitude/Amplitude-Swift/commit/7b71d129f6b71e6a7978c934cda60f8190316674))
+
+## [1.10.4](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.3...v1.10.4) (2024-11-14)
+
+
+### Bug Fixes
+
+* improvements to app lifecycle monitoring ([#243](https://github.com/amplitude/Amplitude-Swift/issues/243)) ([8098782](https://github.com/amplitude/Amplitude-Swift/commit/809878222577da3e1a177452305b190c99631757))
+
+## [1.10.3](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.2...v1.10.3) (2024-11-13)
+
+
+### Bug Fixes
+
+* empty commit to trigger a build ([ed0953f](https://github.com/amplitude/Amplitude-Swift/commit/ed0953f7d599f62fe60134581ae455a69031953e))
+
+## [1.10.2](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.1...v1.10.2) (2024-11-12)
+
+
+### Bug Fixes
+
+* properly decode embedded arrays ([#242](https://github.com/amplitude/Amplitude-Swift/issues/242)) ([c5b4d2b](https://github.com/amplitude/Amplitude-Swift/commit/c5b4d2bf1fd002340300e427cedbc75113560fc8))
+* restore Analytics-Connector to built from source version when distributing as a swift package ([#241](https://github.com/amplitude/Amplitude-Swift/issues/241)) ([31133ac](https://github.com/amplitude/Amplitude-Swift/commit/31133ac2d342f175fab55a1a114a6b7868de86f5))
+
+## [1.10.1](https://github.com/amplitude/Amplitude-Swift/compare/v1.10.0...v1.10.1) (2024-11-01)
+
+
+### Bug Fixes
+
+* preserve symlinks when zipping xcframeworks ([#237](https://github.com/amplitude/Amplitude-Swift/issues/237)) ([0b01833](https://github.com/amplitude/Amplitude-Swift/commit/0b018330464248d3a6f26e133503db88159b254d))
+
+# [1.10.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.9.4...v1.10.0) (2024-10-31)
+
+
+### Features
+
+* support building without UIKit ([#235](https://github.com/amplitude/Amplitude-Swift/issues/235)) ([61e77a1](https://github.com/amplitude/Amplitude-Swift/commit/61e77a16bc164f7eba86db35de2dcd308f828d9f))
+
+## [1.9.4](https://github.com/amplitude/Amplitude-Swift/compare/v1.9.3...v1.9.4) (2024-10-11)
+
+
+### Bug Fixes
+
+* Empty Commit to Trigger a Build ([19ffa87](https://github.com/amplitude/Amplitude-Swift/commit/19ffa87f0ea6621e458c76be8c00c3443e8fe08c))
+
+## [1.9.3](https://github.com/amplitude/Amplitude-Swift/compare/v1.9.2...v1.9.3) (2024-10-01)
+
+
+### Bug Fixes
+
+* add autoreleasepool around sendNextEventFile ([#232](https://github.com/amplitude/Amplitude-Swift/issues/232)) ([0ec1187](https://github.com/amplitude/Amplitude-Swift/commit/0ec1187a218c5b90cd1b8a9024ceabb55af6a092))
+* improve logging in httpclient ([#228](https://github.com/amplitude/Amplitude-Swift/issues/228)) ([633deb5](https://github.com/amplitude/Amplitude-Swift/commit/633deb5bd793c487ef2063877016d61abc0bb5d2))
+* Use extension safe APIs ([#231](https://github.com/amplitude/Amplitude-Swift/issues/231)) ([4794f4e](https://github.com/amplitude/Amplitude-Swift/commit/4794f4e0cdbccc7d1a663247879fefe74438d810))
+
+## [1.9.2](https://github.com/amplitude/Amplitude-Swift/compare/v1.9.1...v1.9.2) (2024-09-10)
+
+
+### Bug Fixes
+
+* notify plugins of internal sessionId changes ([#224](https://github.com/amplitude/Amplitude-Swift/issues/224)) ([61d43cf](https://github.com/amplitude/Amplitude-Swift/commit/61d43cff8dc7b15208076b6e3dbeb25eee9df646))
+
+## [1.9.1](https://github.com/amplitude/Amplitude-Swift/compare/v1.9.0...v1.9.1) (2024-09-05)
+
+
+### Bug Fixes
+
+* Add maxQueuedEventCount parameter to trim events in storage if over a limit ([#222](https://github.com/amplitude/Amplitude-Swift/issues/222)) ([0134383](https://github.com/amplitude/Amplitude-Swift/commit/0134383b76890bba7cc05d4cc8656b234f052189))
+* Send a max of one upload at a time ([#221](https://github.com/amplitude/Amplitude-Swift/issues/221)) ([63e76d9](https://github.com/amplitude/Amplitude-Swift/commit/63e76d9e3b28ce491880665eb2ca778c85aea47a))
+
+# [1.9.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.8.1...v1.9.0) (2024-08-24)
+
+
+### Features
+
+* Enhancements to Plugin interface ([#218](https://github.com/amplitude/Amplitude-Swift/issues/218)) ([254e03a](https://github.com/amplitude/Amplitude-Swift/commit/254e03a0034b40ca10873c1defd547c206cd70a9))
+
+## [1.8.1](https://github.com/amplitude/Amplitude-Swift/compare/v1.8.0...v1.8.1) (2024-08-23)
+
+
+### Bug Fixes
+
+* Delete events on an invalid api key response. ([#211](https://github.com/amplitude/Amplitude-Swift/issues/211)) ([9329a26](https://github.com/amplitude/Amplitude-Swift/commit/9329a26e7ce29a7c5295f3adb9aa6c78619b9c14))
+* Fix code compatibility issues on Xcode 14.1 ([#213](https://github.com/amplitude/Amplitude-Swift/issues/213)) ([b2022b6](https://github.com/amplitude/Amplitude-Swift/commit/b2022b6e44ed9dced61244f5cc6f2c9fd03b899c))
+* fix pinchGestureRecognizer unavailability issue on tvos ([#217](https://github.com/amplitude/Amplitude-Swift/issues/217)) ([4c5ae67](https://github.com/amplitude/Amplitude-Swift/commit/4c5ae674631973c7ddadd3c891def11047a9d01b))
+* set offline when receiving certain error responses ([#212](https://github.com/amplitude/Amplitude-Swift/issues/212)) ([056ccbf](https://github.com/amplitude/Amplitude-Swift/commit/056ccbfe3d63e6df8b128e27a13eed7abed4ee9d))
+
+# [1.8.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.7.0...v1.8.0) (2024-08-08)
+
+
+### Features
+
+* Feature Autocapture ([#209](https://github.com/amplitude/Amplitude-Swift/issues/209)) ([4ab5673](https://github.com/amplitude/Amplitude-Swift/commit/4ab5673bbd0ed45c11adec7b688d8ed38a291d77)), closes [#190](https://github.com/amplitude/Amplitude-Swift/issues/190) [#195](https://github.com/amplitude/Amplitude-Swift/issues/195) [#196](https://github.com/amplitude/Amplitude-Swift/issues/196) [#199](https://github.com/amplitude/Amplitude-Swift/issues/199) [#202](https://github.com/amplitude/Amplitude-Swift/issues/202) [#203](https://github.com/amplitude/Amplitude-Swift/issues/203) [#204](https://github.com/amplitude/Amplitude-Swift/issues/204) [#206](https://github.com/amplitude/Amplitude-Swift/issues/206) [#207](https://github.com/amplitude/Amplitude-Swift/issues/207) [#208](https://github.com/amplitude/Amplitude-Swift/issues/208)
+
+# [1.7.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.6.2...v1.7.0) (2024-07-11)
+
+
+### Bug Fixes
+
+* add support for Decimal property values ([#187](https://github.com/amplitude/Amplitude-Swift/issues/187)) ([c838bd9](https://github.com/amplitude/Amplitude-Swift/commit/c838bd90a6da46337af5a5f6960fbca531994d2d))
+* fix indentation issue ([#188](https://github.com/amplitude/Amplitude-Swift/issues/188)) ([48b9a37](https://github.com/amplitude/Amplitude-Swift/commit/48b9a37ff77fbd4ae2381aa400ff65bf443869ee))
+
+
+### Features
+
+* Improve codable support ([#192](https://github.com/amplitude/Amplitude-Swift/issues/192)) ([1ad9796](https://github.com/amplitude/Amplitude-Swift/commit/1ad979673abaeabcd84afe6a495c01a169a43284))
+
+## [1.6.2](https://github.com/amplitude/Amplitude-Swift/compare/v1.6.1...v1.6.2) (2024-06-14)
+
+
+### Bug Fixes
+
+* Don't use idfv for deviceId if invalid ([#183](https://github.com/amplitude/Amplitude-Swift/issues/183)) ([f17e7fa](https://github.com/amplitude/Amplitude-Swift/commit/f17e7fa13306f631314a4d28ed811397b5d2511e))
+
+## [1.6.1](https://github.com/amplitude/Amplitude-Swift/compare/v1.6.0...v1.6.1) (2024-06-12)
+
+
+### Bug Fixes
+
+* Add additional diagnostic logging ([#177](https://github.com/amplitude/Amplitude-Swift/issues/177)) ([e0e47a7](https://github.com/amplitude/Amplitude-Swift/commit/e0e47a747eb619dbb0f553c2025ae621bd514793))
+* dispatch identify interceptor callbacks on correct queue ([#176](https://github.com/amplitude/Amplitude-Swift/issues/176)) ([eaf6d16](https://github.com/amplitude/Amplitude-Swift/commit/eaf6d168d4a523cf4e5f279e0e34291f4ffb4887))
+* resolve compilation issue with watchOS 8.0 ([#180](https://github.com/amplitude/Amplitude-Swift/issues/180)) ([d0b7bff](https://github.com/amplitude/Amplitude-Swift/commit/d0b7bff4b228b283cc801c6ad7510f85b2bdc5a7))
+
+# [1.6.0](https://github.com/amplitude/Amplitude-Swift/compare/v1.5.2...v1.6.0) (2024-06-04)
+
+
+### Bug Fixes
+
+* Disable network connectivity check on watchOS as it is not supported on real devices ([#174](https://github.com/amplitude/Amplitude-Swift/issues/174)) ([853e4e5](https://github.com/amplitude/Amplitude-Swift/commit/853e4e510a1c1c098f9404ef6ef4e1281c5298f4))
+
+
+### Features
+
+* support single-target Watch applications ([#163](https://github.com/amplitude/Amplitude-Swift/issues/163)) ([0d23d94](https://github.com/amplitude/Amplitude-Swift/commit/0d23d9428d564b40248c9ddd632bae9b10a62642))
+
 ## [1.5.2](https://github.com/amplitude/Amplitude-Swift/compare/v1.5.1...v1.5.2) (2024-05-21)
 
 

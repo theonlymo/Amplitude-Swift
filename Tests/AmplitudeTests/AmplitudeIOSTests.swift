@@ -19,14 +19,17 @@ final class AmplitudeIOSTests: XCTestCase {
         window.addSubview(rootViewController.view)
     }
 
-    func testDidFinishLaunching_ApplicationInstalled() {
+    func testDidFinishLaunching_ApplicationInstalled() throws {
         let configuration = Configuration(
             apiKey: "api-key",
+            instanceName: #function,
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
         let amplitude = Amplitude(configuration: configuration)
+        try storageMem.write(key: StorageKey.APP_BUILD, value: nil)
+        try storageMem.write(key: StorageKey.APP_VERSION, value: nil)
         NotificationCenter.default.post(name: UIApplication.didFinishLaunchingNotification, object: nil)
 
         amplitude.waitForTrackingQueue()
@@ -47,11 +50,11 @@ final class AmplitudeIOSTests: XCTestCase {
     func testDidFinishLaunching_ApplicationUpdated() throws {
         let configuration = Configuration(
             apiKey: "api-key",
+            instanceName: #function,
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
-        try storageMem.write(key: StorageKey.LAST_EVENT_TIME, value: 123 as Int64)
         try storageMem.write(key: StorageKey.APP_BUILD, value: "abc")
         try storageMem.write(key: StorageKey.APP_VERSION, value: "xyz")
         let amplitude = Amplitude(configuration: configuration)
@@ -78,7 +81,7 @@ final class AmplitudeIOSTests: XCTestCase {
             apiKey: "api-key",
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
 
         let info = Bundle.main.infoDictionary
@@ -121,7 +124,7 @@ final class AmplitudeIOSTests: XCTestCase {
             apiKey: "api-key",
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
 
         let info = Bundle.main.infoDictionary
@@ -187,7 +190,7 @@ final class AmplitudeIOSTests: XCTestCase {
             apiKey: "api-key",
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
 
         let info = Bundle.main.infoDictionary
@@ -220,7 +223,7 @@ final class AmplitudeIOSTests: XCTestCase {
             apiKey: "api-key",
             storageProvider: storageMem,
             identifyStorageProvider: interceptStorageMem,
-            defaultTracking: DefaultTrackingOptions(sessions: false, appLifecycles: true)
+            autocapture: .appLifecycles
         )
 
         let amplitude = Amplitude(configuration: configuration)

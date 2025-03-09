@@ -91,6 +91,7 @@ class PersistentStorage: Storage {
                 return readV1File(content: content!)
             }
         } catch {
+            diagonostics.addErrorLog(error.localizedDescription)
             logger?.error(message: error.localizedDescription)
         }
         return content
@@ -101,6 +102,7 @@ class PersistentStorage: Storage {
             do {
                 try fileManager.removeItem(atPath: eventBlock.path)
             } catch {
+                diagonostics.addErrorLog(error.localizedDescription)
                 logger?.error(message: error.localizedDescription)
             }
         }
@@ -117,6 +119,7 @@ class PersistentStorage: Storage {
             do {
                 try fileManager.removeItem(atPath: eventBlock.path)
             } catch {
+                diagonostics.addErrorLog(error.localizedDescription)
                 logger?.error(message: error.localizedDescription)
             }
         }
@@ -344,6 +347,7 @@ extension PersistentStorage {
             }
             try outputStream?.write("\(jsonString)\(PersistentStorage.DELMITER)")
         } catch {
+            diagonostics.addErrorLog(error.localizedDescription)
             logger?.error(message: error.localizedDescription)
         }
         finish(file: storeFile)
@@ -354,6 +358,7 @@ extension PersistentStorage {
             outputStream = try OutputFileStream(fileURL: file)
             try outputStream?.create()
         } catch {
+            diagonostics.addErrorLog(error.localizedDescription)
             logger?.error(message: error.localizedDescription)
         }
     }

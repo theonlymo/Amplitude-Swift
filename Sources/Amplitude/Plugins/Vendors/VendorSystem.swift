@@ -33,7 +33,7 @@ internal class VendorSystem {
     }
 
     static var current: VendorSystem = {
-        #if os(iOS) || os(tvOS) || targetEnvironment(macCatalyst)
+        #if (os(iOS) || os(tvOS) || os(visionOS) || targetEnvironment(macCatalyst)) && !AMPLITUDE_DISABLE_UIKIT
             return IOSVendorSystem()
         #elseif os(macOS)
             return MacOSVendorSystem()
@@ -46,6 +46,10 @@ internal class VendorSystem {
 
     var requiredPlugin: Plugin? {
         return nil
+    }
+
+    var networkConnectivityCheckingEnabled: Bool {
+        return true
     }
 
     func beginBackgroundTask() -> BackgroundTaskCompletionCallback? {
